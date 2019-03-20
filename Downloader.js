@@ -14,6 +14,7 @@ class Downloader {
         this.data = null;
     }
 
+    //添加downloader运行前中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
             console.log('添加beforemiddleware失败');
@@ -22,6 +23,7 @@ class Downloader {
         this.beforeMiddleWare.push(mw);
     }
 
+    //添加downloader运行后中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
             console.log('添加beforemiddleware失败');
@@ -30,27 +32,33 @@ class Downloader {
         this.afterMiddleWare.push(mw);
     }
 
+    //运行downloader运行前中间件
     execBeforeMiddleWare() {
         console.log('running beforemiddleware');
         let currentMW = null;
-        for (i = 0; i < this.beforeMiddleWare.length; i++) {
+        for (let i = 0; i < this.beforeMiddleWare.length; i++) {
             currentMW = this.beforeMiddleWare[i];
             currentMW(this.url, this.option);
         }
         console.log('running beforemiddleware end');
     }
 
+    //运行downloader运行后中间件
     execAfterMiddleWare() {
         console.log('running aftermiddleware');
         let currentMW = null;
-        for (i = 0; i < this.afterMiddleWare.length; i++) {
+        for (let i = 0; i < this.afterMiddleWare.length; i++) {
             currentMW = this.afterMiddleWare[i];
             currentMW(this.data);
         }
         console.log('running afteremiddleware end');
     }
 
+    //发送请求
     sendRequest() {
+
+        execBeforeMiddleWare();
+        //调用默认sender
         if (typeof sender != 'function') {
             return new Promise(function (resolved, rejected) {
                 request({
@@ -75,8 +83,10 @@ class Downloader {
 
         }
         else {
+            //调用定制sender
             return sender(this.url, this.option);
         }
+        execAfterMiddleWare();
     }
 
 
