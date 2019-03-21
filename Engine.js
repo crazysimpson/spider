@@ -1,5 +1,8 @@
 const Crawler = require('./Crawler');
 const Downloader = require('./Downloader');
+const getLogger = require('./utils/log');
+
+var logger = getLogger();
 
 class Engine {
     constructor() {

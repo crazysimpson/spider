@@ -5,6 +5,7 @@
   "main": "Crawler.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "log4js": "^4.0.2",
     "redis": "^2.8.0",
     "request": "^2.88.0"
   },

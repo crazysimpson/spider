@@ -1,4 +1,7 @@
 const request = require('request');
+const getLogger = require('./utils/log').getLogger;
+
+var logger = getLogger();
 
 class Downloader {
     constructor(url, method, header, body, json) {
@@ -17,7 +20,8 @@ class Downloader {
     //添加downloader运行前中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
-            console.log('添加beforemiddleware失败');
+            logger.warn('添加beforemiddleware失败');
+            throw new Error('添加beforemiddleware失败');
             return;
         }
         this.beforeMiddleWare.push(mw);
@@ -26,7 +30,8 @@ class Downloader {
     //添加downloader运行后中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
-            console.log('添加beforemiddleware失败');
+            logger.warn('添加beforemiddleware失败');
+            throw new Error('添加aftermiddleware失败');
             return;
         }
         this.afterMiddleWare.push(mw);
@@ -34,24 +39,24 @@ class Downloader {
 
     //运行downloader运行前中间件
     execBeforeMiddleWare() {
-        console.log('running beforemiddleware');
+        logger.info('running beforemiddleware');
         let currentMW = null;
         for (let i = 0; i < this.beforeMiddleWare.length; i++) {
             currentMW = this.beforeMiddleWare[i];
             currentMW(this.url, this.option);
         }
-        console.log('running beforemiddleware end');
+        logger.info('running beforemiddleware end');
     }
 
     //运行downloader运行后中间件
     execAfterMiddleWare() {
-        console.log('running aftermiddleware');
+        logger.info('running aftermiddleware');
         let currentMW = null;
         for (let i = 0; i < this.afterMiddleWare.length; i++) {
             currentMW = this.afterMiddleWare[i];
             currentMW(this.data);
         }
-        console.log('running afteremiddleware end');
+        logger.info('running afteremiddleware end');
     }
 
     //发送请求
@@ -74,8 +79,8 @@ class Downloader {
                         resolved(data)
                     }
                     else {
-                        console.log('请求发送失败：' + error.message);
-                        console.log('失败url: ' + this.url);
+                        logger.error('请求发送失败：' + error.message);
+                        logger.error('失败url: ' + this.url);
                         rejected(error);
                     }
                 });

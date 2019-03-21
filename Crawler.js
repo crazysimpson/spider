@@ -1,4 +1,8 @@
 const cheerio = require('cheerio');
+const getLogger = require('./utils/log').getLogger;
+
+var logger = getLogger();
+
 
 class Crawler {
     constructor() {
@@ -13,7 +17,8 @@ class Crawler {
     //增加crawler处理前中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
-            console.log('添加beforemiddleware失败');
+            logger.warn('添加beforemiddleware失败');
+            throw new Error('添加beforemiddleware失败');
             return;
         }
         this.beforeMiddleWare.push(mw);
@@ -22,7 +27,8 @@ class Crawler {
     //添加cralwer处理后中间件
     addAfterMiddleWare(mw) {
         if (typeof mw != 'function') {
-            console.log('添加aftermiddleware失败');
+            logger.warn('添加aftermiddleware失败');
+            throw new Error('添加aftermiddleware失败');
             return;
         }
         this.afterMiddleWare.push(mw);
@@ -30,24 +36,24 @@ class Crawler {
 
     //运行cralwer处理前中间件
     execBeforeMiddleWare() {
-        console.log('begin crawler running beforemiddleware');
+        logger.info('begin crawler running beforemiddleware');
         let currentMiddleWare = null;
         for (let i = 0; i < this.beforeMiddleWare.length; i++) {
             currentMiddleWare = this.beforeMiddleWare[i];
             this.data = currentMiddleWare(this.data);
         }
-        console.log('end crawler running beforemiddleware');
+        logger.info('end crawler running beforemiddleware');
     }
 
     //运行cralwer处理后中间件
     execAfterMiddleWare() {
-        console.log('begin crawler running aftermiddleware');
+        logger.info('begin crawler running aftermiddleware');
         let currentMiddleWare = null;
         for (let i = 0; i < this.afterMiddleWare.length; i++) {
             currentMiddleWare = this.afterMiddleWare[i];
             this.data = currentMiddleWare(this.data);
         }
-        console.log('end crawler running aftermiddleware');
+        logger.info('end crawler running aftermiddleware');
     }
 
     //获取页面链接
@@ -68,7 +74,8 @@ class Crawler {
     //设置url过滤器
     setUrlFilter(filter) {
         if (typeof filter != 'function') {
-            console.log('添加filter失败');
+            logger.warn('添加filter失败');
+            throw new Error('添加filter失败');
             return;
         }
         this.filter = filter;
@@ -77,7 +84,8 @@ class Crawler {
     //设置爬虫
     setCrawler(crawler) {
         if (typeof crawler != 'function') {
-            console.log('添加crawler失败');
+            logger.error('添加crawler失败');
+            throw new Error('添加crawler失败');
             return;
         }
         this.crawler = crawler;
