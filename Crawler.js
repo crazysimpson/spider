@@ -5,7 +5,7 @@ class Crawler {
         this.beforeMiddleWare = [];
         this.afterMiddleWare = [];
         this.data = null;
-        this.urls = [];
+        //this.urls = [];
         this.filter = null;
         this.crawler = null;
     }
@@ -54,12 +54,14 @@ class Crawler {
     getAllUrls() {
         let $ = cheerio.load(this.data);
         let filer = this.filter;
+        let urls = [];
         $('a').each(function () {
-            let url = this.urls.push($(this).attr('href'));
+            let url = $(this).attr('href');
             if (filter(url)) {
-                this.urls.push(url);
+                urls.push(url);
             }
         });
+        return urls;
 
     }
 
@@ -85,7 +87,6 @@ class Crawler {
     crawl(data) {
         this.data = data;
         this.execBeforeMiddleWare();
-        this.getAllUrls()
         this.crawler(this.data);
         this.execAfterMiddleWare();
     }

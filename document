@@ -1,0 +1,5 @@
+Downloader类
+    设置url，option，beforemiddleware， aftermiddleware
+
+Crawler类
+    设置filter， cralwer获取对象

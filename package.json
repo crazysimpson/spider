@@ -1,0 +1,25 @@
+{
+  "name": "spider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Crawler.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "redis": "^2.8.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crazysimpson/spider.git"
+  },
+  "author": "crazysimpson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crazysimpson/spider/issues"
+  },
+  "homepage": "https://github.com/crazysimpson/spider#readme"
+}
