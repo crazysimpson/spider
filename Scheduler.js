@@ -13,12 +13,13 @@ class Scheduler {
 
     initRedis() {
         this.redisClient = redis.createClient(config.redis.port, config.redis.host, { auth_pass: config.redis.password });
-        redis.on('error', (err) => {
+        this.redisClient.on('error', (err) => {
             logger.error("redis发生错误 " + err.message);
             throw new Error('redis发生错误');
         });
-        redis.on('connect', () => {
+        this.redisClient.on('connect', () => {
             logger.info('redis连接成功');
+            this.redisClient.auth('739863718Qq');
         });
     }
 
@@ -36,25 +37,35 @@ class Scheduler {
 
     addUrl(url) {
         let redisClient = this.redisClient
-        redisClient.sget('crawledUrl', (err, value) => {
-            if (err) {
-                logger.error('redis获取crawledUrl失败');
-            }
-            if (val == null) {
-                redisClient.sadd('uncrawlUrl', (err, value) => {
-                    if (err) {
-                        logger.error('添加URL失败：' + url);
-                    }
-                    logger.info('添加' + url + '到uncrawlUrl');
-                });
-            }
+        return new Promise(function (resolved, rejected) {
+            redisClient.SISMEMBER('crawledUrl', url, (err, value) => {
+                if (err) {
+                    logger.error('redis获取crawledUrl失败');
+                }
+                if (value == false) {
+                    redisClient.sadd('uncrawlUrl', url, (err, value) => {
+                        if (err) {
+                            logger.error('添加URL失败：' + url);
+                            logger.error(err.message);
+                            rejected(err);
+                        }
+                        logger.info('添加' + url + '到uncrawlUrl');
+                    });
+                }
+                else {
+                    logger.info("url已存在:" + url);
+                }
+                resolved();
+            });
         });
     }
 
     addUncrawlUrls(urls) {
-        urls.each((value) => {
-            this.addUrl(value);
+        let addList = [];
+        urls.forEach((value) => {
+            addList.push(this.addUrl(value));
         });
+        return Promise.all(addList);
     }
 
     //调度
@@ -76,3 +87,16 @@ class Scheduler {
         })
     }
 }
+
+var urls = ['www.baidu.com', 'www.google.com', 'www.facebook.com', 'www.linkedin.com']
+var scheduler = new Scheduler();
+
+//单元测试代码
+async function run() {
+    await scheduler.addUncrawlUrls(urls);
+    scheduler.schedule().then((val) => {
+        console.log(val);
+    });
+}
+run();
+module.exports = Scheduler;

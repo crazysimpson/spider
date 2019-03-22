@@ -17,6 +17,31 @@ class Downloader {
         this.data = null;
     }
 
+    //设置url
+    setUrl(url) {
+        this.url = url
+    }
+
+    //设置请求方法
+    setMethod(method) {
+        this.option.method = method;
+    }
+
+    //设置请求header
+    setHeader(header) {
+        this.option.header = header;
+    }
+
+    //设置body
+    setBody(body) {
+        this.option.body = body;
+    }
+
+    //设置是否使用jsong格式
+    setJson(json) {
+        this.option.json = json;
+    }
+
     //添加downloader运行前中间件
     addBeforeMiddleWare(mw) {
         if (typeof mw != 'function') {
@@ -62,16 +87,18 @@ class Downloader {
     //发送请求
     sendRequest() {
 
-        execBeforeMiddleWare();
+        this.execBeforeMiddleWare();
         //调用默认sender
+        let url = this.url;
+        let option = this.option;
         if (typeof sender != 'function') {
             return new Promise(function (resolved, rejected) {
                 request({
-                    url: this.url,
-                    method: this.option.method,
-                    json: this.option.json,
-                    header: this.option.header,
-                    body: JSON.stringify(this.option.body)
+                    url: url,
+                    method: option.method,
+                    json: option.json,
+                    header: option.header,
+                    body: JSON.stringify(option.body)
                 }, (error, response, data) => {
                     if (!error) {
                         //此处传送data给engine
@@ -80,7 +107,7 @@ class Downloader {
                     }
                     else {
                         logger.error('请求发送失败：' + error.message);
-                        logger.error('失败url: ' + this.url);
+                        logger.error('失败url: ' + url);
                         rejected(error);
                     }
                 });
@@ -91,12 +118,19 @@ class Downloader {
             //调用定制sender
             return sender(this.url, this.option);
         }
-        execAfterMiddleWare();
+        this.execAfterMiddleWare();
     }
 
 
 }
 
-module.exports = Downloader;
+//单元测试代码
 
+var url = 'http://www.baidu.com';
+var dl = new Downloader(url);
+dl.sendRequest(url).then(val => {
+    console.log(val);
+});
+module.exports = Downloader;
+ 
 
