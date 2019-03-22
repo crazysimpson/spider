@@ -1,5 +1,8 @@
-const Crawler = require('./Crawler');
-const Downloader = require('./Downloader');
+const Crawler = require('./lib/Crawler');
+const Downloader = require('./lib/Downloader');
+const Crawler = require('./lib/Crawler');
+const Scheduler = require('./lib/Scheduler');
+const Pipline = require('./lib/Pipline');
 const getLogger = require('./utils/log');
 
 var logger = getLogger();
