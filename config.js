@@ -11,7 +11,9 @@ config = {
 
     pipline: {
         filename: 'spider.data'
-    }
+    },
+
+    multiProcess: false,
 
 
 };
