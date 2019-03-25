@@ -56,6 +56,7 @@ class Engine {
                     return;
                 }
                 this.downloaders.setUrl(nextUrl);
+                this.scheduler.addUrlToCrawled(nextUrl);
                 return this.downloaders.sendRequest();
                 //return this.crawlers.crawl()
             }).then((val) => {
